@@ -58,22 +58,51 @@ def powers():
     
     return make_response(jsonify(powers_list), 200)
 
-@app.route('/powers/<int:id>')
+@app.route('/powers/<int:id>', methods=['GET', 'PATCH'])
 def powers_by_id(id):
-     
-    power = Power.query.filter_by(id=id).first()
+    if request.method == 'GET':
+        power = Power.query.get(id)
 
-    if power:
-        power_data = {
-            "id": power.id,
-            "name": power.name,
-            "description": power.description
-        }
-        return make_response(jsonify(power_data), 200)
-    
-    else:
-        error_response = {"error": "Power not found"}
-        return make_response(jsonify(error_response), 404)
+        if power:
+            power_data = {
+                "id": power.id,
+                "name": power.name,
+                "description": power.description
+            }
+            return make_response(jsonify(power_data), 200)
+        else:
+            error_response = {"error": "Power not found"}
+            return make_response(jsonify(error_response), 404)
+
+    elif request.method == 'PATCH':
+        power = Power.query.get(id)
+
+        if power:
+            data = request.get_json()
+
+            try:
+                for attr in data:
+                    setattr(power, attr, data[attr])
+
+                # Validate the model before committing changes
+                db.session.commit()
+
+                power_data = {
+                    "id": power.id,
+                    "name": power.name,
+                    "description": power.description
+                }
+                return make_response(jsonify(power_data), 200)
+
+            except ValueError as e:
+                # Catch validation error and include it in the response
+                error_response = {"error": str(e)}
+                return make_response(jsonify(error_response), 400)
+
+        else:
+            error_response = {"error": "Power not found"}
+            return make_response(jsonify(error_response), 404)
+
 
 if __name__ == '__main__':
     app.run(port=5555)
