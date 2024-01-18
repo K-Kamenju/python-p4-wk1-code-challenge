@@ -14,7 +14,7 @@ class Hero(db.Model, SerializerMixin):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
     
-    hero_powers = db.relationship('Hero_Power', backref = 'hero')
+    hero_powers = db.relationship('HeroPower', backref = 'hero')
     
     def __repr__(self):
         return f'<The heroes name is {self.name} and his super name is {self.super_name}>'
@@ -30,12 +30,12 @@ class Power(db.Model, SerializerMixin):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
     
-    hero_powers = db.relationship('Hero_Power', backref = 'power')
+    hero_powers = db.relationship('HeroPower', backref = 'power')
     
     def __repr__(self):
         return f'<The power is named {self.name} and it {self.description}>'
 
-class Hero_Power(db.Model, SerializerMixin):
+class HeroPower(db.Model, SerializerMixin):
     __tablename__ = 'hero_powers'
     
     serialize_rules = ('-hero.hero_powers', '-power.hero_powers')
