@@ -102,7 +102,23 @@ def powers_by_id(id):
         else:
             error_response = {"error": "Power not found"}
             return make_response(jsonify(error_response), 404)
+        
+@app.route('/hero_powers', methods = ['POST'])
+def hero_powers():
+    
+    data = request.get_json()
+    
+    new_hero_power = HeroPower(
+        strength = data['strength'],
+        power_id = data['power_id'],
+        hero_id = data['hero_id']
+    )
 
+    db.session.add(new_hero_power)
+    db.session.commit()
+    
+    return make_response(new_hero_power.to_dict(), 201)
+    
 
 if __name__ == '__main__':
     app.run(port=5555)
