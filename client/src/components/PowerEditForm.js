@@ -12,18 +12,15 @@ function PowerEditForm() {
   const { id } = useParams();
 
   useEffect(() => {
-    fetch(`/powers/${id}`).then((r) => {
-      if (r.ok) {
-        r.json().then((power) => {
-          setPower({ data: power, errors: [], status: "resolved" });
-          setDescription(power.description);
-        });
-      } else {
-        r.json().then((err) =>
-          setPower({ data: null, errors: [err.error], status: "rejected" })
-        );
-      }
-    });
+    fetch(`/powers/${id}`)
+      .then((r) => r.json())
+      .then((power) => {
+        setPower({ data: power, errors: [], status: "resolved" });
+        setDescription(power.description);
+      })
+      .catch((err) =>
+        setPower({ data: null, errors: [err.error], status: "rejected" })
+      );
   }, [id]);
 
   if (status === "pending") return <h1>Loading...</h1>;
@@ -38,15 +35,15 @@ function PowerEditForm() {
       body: JSON.stringify({
         description,
       }),
-    }).then((r) => {
-      if (r.ok) {
-        history.push(`/powers/${power.id}`);
-      } else {
-        r.json().then((err) =>
-          setPower({ data: power, errors: err.errors, status: "rejected" })
-        );
-      }
-    });
+    })
+      .then((r) => r.json())
+      .then((updatedPower) => {
+        setPower({ data: updatedPower, errors: [], status: "resolved" });
+        history.push(`/powers/${updatedPower.id}`);
+      })
+      .catch((err) =>
+        setPower({ data: power, errors: err.errors, status: "rejected" })
+      );
   }
 
   return (

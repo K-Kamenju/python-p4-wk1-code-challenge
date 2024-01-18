@@ -10,17 +10,14 @@ function Hero() {
   const { id } = useParams();
 
   useEffect(() => {
-    fetch(`/heroes/${id}`).then((r) => {
-      if (r.ok) {
-        r.json().then((hero) =>
-          setHero({ data: hero, error: null, status: "resolved" })
-        );
-      } else {
-        r.json().then((err) =>
-          setHero({ data: null, error: err.error, status: "rejected" })
-        );
-      }
-    });
+    fetch(`/heroes/${id}`)
+      .then((r) => r.json())
+      .then((hero) =>
+        setHero({ data: hero, error: null, status: "resolved" })
+      )
+      .catch((err) =>
+        setHero({ data: null, error: err.error, status: "rejected" })
+      );
   }, [id]);
 
   if (status === "pending") return <h1>Loading...</h1>;
@@ -33,9 +30,9 @@ function Hero() {
 
       <h3>Powers:</h3>
       <ul>
-        {hero.powers.map((power) => (
-          <li key={hero.id}>
-            <Link to={`/powers/${power.id}`}>{power.name}</Link>
+        {hero.hero_powers.map((power) => (
+          <li key={power.id}>
+            <Link to={`/powers/${power.power.id}`}>{power.power.name}</Link>
           </li>
         ))}
       </ul>

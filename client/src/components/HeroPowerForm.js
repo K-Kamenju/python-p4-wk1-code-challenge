@@ -35,14 +35,14 @@ function HeroPowerForm() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(formData),
-    }).then((r) => {
-      if (r.ok) {
-        history.push(`/heroes/${heroId}`);
-      } else {
-        r.json().then((err) => setFormErrors(err.errors));
-      }
-    });
+    })
+      .then((r) => r.json())
+      .then((newHeroPower) => {
+        history.push(`/heroes/${newHeroPower.hero.id}`);
+      })
+      .catch((err) => setFormErrors(err.errors));
   }
+
 
   return (
     <form onSubmit={handleSubmit}>
