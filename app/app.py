@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from flask import Flask, make_response
+from flask import Flask, make_response, jsonify, request
 from flask_migrate import Migrate
 from flask_cors import CORS
 
@@ -17,8 +17,26 @@ db.init_app(app)
 
 @app.route('/')
 def home():
-    return ''
+    response_body = {
+        "Hello": "Welcome to my Backend",
+        "To Continue": "Enter a valid URL Route"
+    }
+    
+    response = make_response(jsonify(response_body), 200)
+    return response
 
+@app.route('/heroes')
+def heroes():
+    
+    heroes_list = [hero.to_dict() for hero in Hero.query.all()]
+    return make_response(jsonify(heroes_list), 200)
+
+@app.route('/heroes/<int:id>')
+def heroes_by_id(id):
+    
+    hero_data = Hero.query.filter_by(id=id).first().to_dict()
+    return make_response(jsonify(hero_data), 200)
+ 
 
 if __name__ == '__main__':
     app.run(port=5555)
