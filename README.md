@@ -10,6 +10,11 @@ working.
 Your job is to build out the Flask API to add the functionality described in the
 deliverables below.
 
+## Testing
+
+To test the functionality of all the endpoints please ensure to install the dependencies on both Front and Back-end then flask run and npm start on two different terminals
+
+
 ## Setup
 
 To download the dependencies for the frontend and backend, run:
